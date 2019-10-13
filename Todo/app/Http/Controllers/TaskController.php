@@ -27,7 +27,13 @@ class TaskController extends Controller
     {
         return view('tasks.index', [
             'tasks' => $this->tasks->forUser($request->user()),
-        ]);
+
+            ]);
+    }
+
+
+    public function ForOneTask($id){
+        return Task::find($id);
     }
 
 
@@ -49,8 +55,11 @@ class TaskController extends Controller
 
     public function forUser(User $user)
     {
-        return $user->tasks()
+        return $user->tasks('is_completed', false)
                     ->orderBy('created_at', 'asc')
+                    ->withCount(['tasks' => function ($query) {
+                        $query->where('is_completed', false);
+                    }])
                     ->get();
     }
 
@@ -63,11 +72,20 @@ class TaskController extends Controller
     }
 
 
-    public function destroy(Request $request, Task $task)
-    {
-        $this->authorize('destroy', $task);
+    public function delete(Request $request, $id){ // delete one
+        $task= Task::findOrFail($id);
         $task->delete();
-        return redirect('/tasks');
+        return 204;
+    }
+
+
+
+
+    public function markAsCompleted(Task $task)
+    {
+        $task->is_completed = true;
+        $task->update();
+        return response()->json('updated!');
     }
 
 

@@ -11,13 +11,6 @@
 |
 */
 
-Route::group(['middleware' => ['web']], function () {
-    Route::get('/', function () {
-        return view('welcome');
-    })->middleware('guest');
-    Route::get('/tasks', 'TaskController@index');
-    Route::post('/task', 'TaskController@store');
-    Route::put('task/${id}' ,'TaskController@update' );
-    Route::delete('/task/{task}', 'TaskController@destroy');
-    Route::auth();
+Route::get('/', function () {
+    return view('welcome');
 });

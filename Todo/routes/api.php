@@ -13,6 +13,18 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+
+Route::group(['middleware' => ['web']], function () {
+    Route::get('/', function () {
+        return view('welcome');
+    })->middleware('guest');
+    Route::get('tasks/{id}', 'TaskController@ForOneTask');
+
+    Route::get('/tasks', 'TaskController@index');
+    Route::post('/task', 'TaskController@store');
+    Route::put('task/{id}' ,'TaskController@update' );
+    Route::delete('/task/{id}', 'TaskController@destroy');
+    Route::put('tasks/{task}', 'TaskController@markAsCompleted');
+    Route::auth();
 });
+

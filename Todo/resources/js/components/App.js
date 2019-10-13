@@ -1,11 +1,13 @@
 import React , {Component} from 'react';
 import {BrowserRouter  as Router, Route} from 'react-router-dom'
 import axios from 'axios';
-import './App.css';
-import Todos from './Components/Todos';
 
-import Header from './Components/layout/Header';
-import AddTodo from './Components/AddTodo';
+import Todos from './Todos';
+
+import Header from './layout/Header';
+import AddTodo from './AddTodo';
+// import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 
 export default class App extends Component {
   state = {

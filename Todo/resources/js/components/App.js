@@ -1,43 +1,106 @@
-import React, { Component } from 'react'
-import './App.css'
-import List from './List';
-import Header from './Header';
+import React , {Component} from 'react';
+import {BrowserRouter  as Router, Route} from 'react-router-dom'
+import axios from 'axios';
+import './App.css';
+import Todos from './Components/Todos';
+
+import Header from './Components/layout/Header';
+import AddTodo from './Components/AddTodo';
 
 export default class App extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            term: '',
-            items: []
-        }
-    }
+  state = {
+    todos : [ ]
+  }
 
-    /*componentDidMount() {
-    getList().then(data => {
-      //console.log(data);
-      this.setState({
-        items: [...this.state.items, ...data]
-      });
-    });
-  }*/
+  componentDidMount(){
+    axios.get('/api/tasks', {
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(res => this.setState({todos: res.data}))
+  }
 
-    render() {
-        return (
-            <div className="container">
-                <div className="row">
-                    <div className="col-md-6 mx-auto">
-                    <Header />
-                        <h1 className="text-center">TODO List App</h1>
-                        <List/>
-                    </div>
-                </div>
-</div>
+
+  //Toggle Complete
+  markComplete = (id) =>{
+    this.setState({todos : this.state.todos.map((todo) => {
+         if(todo.id === id){
+           todo.comppleted = !todo.comppleted
+         }
+         return todo
+    })
+  })
+  }
+
+
+//Delete Todo
+delTodo = (id) =>{
+ this.setState({todos : [...this.state.todos.filter(todo => todo.id !== id)]})
+}
+
+
+// Add Todo
+addTodo = (title) => {
+  axios.post( '/api/tasks',
+  {
+      name: name
+  },
+  {
+    title, completed: false
+  })
+  .then(res => this.setState({todos : [...this.state.todos, res.data]}))
+}
+
+
+
+updateItem = (title, id) => {
+    return axios
+        .put(
+            `/api/tasks/${id}`,
+            {
+                title: title
+            },
+            {
+                headers: { 'Content-Type': 'application/json' }
+            }
         )
-    }
+        .then(function(response) {
+            console.log(response)
+        })
 }
 
-if (document.getElementById('root')) {
+  render(){
 
-    ReactDOM.render(<App/>, document.getElementById('root'));
 
+  return (
+    <Router>
+     <div className="App">
+    <div className="container">
+    <Header/>
+    <React.Fragment>
+
+
+    <AddTodo addTodo = { this.addTodo } />
+
+
+
+    <Todos todos = {this.state.todos}
+           markComplete = {this.markComplete}
+           delTodo = {this.delTodo}
+           updateItem = {this.updateItem}/>
+
+
+
+
+      </React.Fragment>
+
+
+
+    </div>
+    </div>
+    </Router>
+
+  );
+  }
 }
+
+ReactDOM.render(<App/> , document.getElementById('root'));

@@ -81,7 +81,7 @@ class TaskController extends Controller
 
 
 
-    public function markAsCompleted(Task $task)
+    public function markCompleted(Task $task)
     {
         $task->is_completed = true;
         $task->update();

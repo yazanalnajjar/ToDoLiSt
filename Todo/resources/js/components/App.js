@@ -31,8 +31,7 @@ export default class App extends Component {
                         <List/>
                     </div>
                 </div>
-
-            </div>
+</div>
         )
     }
 }
